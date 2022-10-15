@@ -1,3 +1,4 @@
+import 'package:firebase/model/user.dart';
 import 'package:flutter/material.dart';
 
 class TopPage extends StatefulWidget {
@@ -8,12 +9,42 @@ class TopPage extends StatefulWidget {
 }
 
 class _TopPageState extends State<TopPage> {
+  List<User> userList = [
+    User(name: 'ビーバー', uid: 'abc', imagePath: 'https://i-ogp.pximg.net/c/540x540_70/img-master/img/2014/06/06/18/29/24/43923614_p0_square1200.jpg', lastMessage: "ビーバーです。"),
+    User(name: 'ジョージ', uid: 'def', imagePath: 'https://marushinbtoc.itembox.design/item/category/george.png', lastMessage: "おさるのジョージ")
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("チャットアプリ"),),
-      body: const Center(
-          child: Text('メイン画面です')),
+      body:ListView.builder(
+          itemCount: userList.length,
+          itemBuilder: (context, index) {
+            return SizedBox(
+              height: 80,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundImage:
+                        userList[index].imagePath.toString() == null ? null : NetworkImage(userList[index].imagePath!),
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(userList[index].name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                      Text(userList[index].lastMessage, style: const TextStyle(color: Colors.grey)),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }),
     );
   }
 }
