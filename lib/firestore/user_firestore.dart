@@ -6,6 +6,7 @@ class UserFirestore {
   static final FirebaseFirestore _firebaseFirestoreInstance = FirebaseFirestore.instance; //1
   static final _userCollection = _firebaseFirestoreInstance.collection('user'); //2
 
+  //Firebaseへユーザを追加する処理
   static Future<void> createUser() async{
     try{
       //Map型でデータを入れてく
@@ -16,6 +17,20 @@ class UserFirestore {
        print('アカウント作成完了');
     } catch(e) {
       print('アカウント作成失敗 ====== $e'); //$eでエラーメッセージも表示
+    }
+  }
+
+  //Firebaseから全ユーザーを取得してくる処理
+  static Future<void> fetchUsers() async{
+    try{
+      final snapshot = await _userCollection.get();
+      print('sanapshotの中身は=====${snapshot}');
+      //_userCollectionの中のドキュメント情報を一つ一つとりだす。
+      snapshot.docs.forEach((doc) {
+        print('ドキュメントID====${doc.id}, 名前=====${doc.data()['name']}');
+      });
+    } catch(e){
+      print('ユーザー情報取得の失敗');
     }
   }
 }
