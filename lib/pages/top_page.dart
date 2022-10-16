@@ -1,4 +1,5 @@
 import 'package:firebase/model/user.dart';
+import 'package:firebase/pages/setting_profile_page.dart';
 import 'package:firebase/pages/talk_room_page.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,14 @@ class _TopPageState extends State<TopPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("チャットアプリ"),),
+      appBar: AppBar(
+        title: const Text("チャットアプリ"),
+        actions: [
+          IconButton(onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingProfilePage()));
+          }, icon: Icon(Icons.settings))
+        ],
+      ),
       body:ListView.builder(
           itemCount: userList.length,
           itemBuilder: (context, index) {
