@@ -5,9 +5,7 @@ class SharedPrefs {
   static SharedPreferences? _preferences;
     //SharedPrefesの実体を取得する処理
   static Future<void> setPrefsInstance() async{
-    if(_preferences == null) {
-      _preferences = await SharedPreferences.getInstance();
-      }
+    _preferences ??= await SharedPreferences.getInstance();
     }
     //与えられたuidをSharedPreferencesに登録する（端末に保存する）
   static Future<void> setUid(String uid) async {

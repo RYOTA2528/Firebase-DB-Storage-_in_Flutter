@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase/model/user.dart';
+import 'package:firebase/utils/shared_prefs.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 class UserFirestore {
@@ -35,6 +37,24 @@ class UserFirestore {
       return snapshot.docs;
     } catch(e){
       print('ユーザー情報取得の失敗');
+      return null;
+    }
+  }
+
+  //myUidの情報から実際にmyProfile(自分のアカウント情報)を取得。
+  static Future<User?> fetchMyUser() async {
+    try{
+      String? uid = SharedPrefs.fetchUid();
+      final myProfile = await _userCollection.doc(uid).get();
+      User user = User(
+        name: myProfile.data()!['name'],
+        imagePath: myProfile.data()!['image_path'],
+        uid: uid!
+      );
+      return user;
+
+    } catch(e) {
+      print('自分のアカウント情報の取得に失敗しました =====${e}');
       return null;
     }
   }
