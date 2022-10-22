@@ -10,12 +10,12 @@ class UserFirestore {
   static Future<String?> createUser() async{
     try{
       //Map型でデータを入れてく
-       await _userCollection.add({
+      final newDoc = await _userCollection.add({
         'name' : '太郎',
          'image_path' : 'https://i-ogp.pximg.net/c/540x540_70/img-master/img/2014/06/06/18/29/24/43923614_p0_square1200.jpg'
        });
        print('アカウント作成完了');
-       return _userCollection.id;
+       return newDoc.id;
 
     } catch(e) {
       print('アカウント作成失敗 ====== $e'); //$eでエラーメッセージも表示
