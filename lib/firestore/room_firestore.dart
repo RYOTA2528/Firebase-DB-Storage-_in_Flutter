@@ -22,4 +22,13 @@ class RoomFirestore {
       print('ルームの作成失敗 ==== $e');
     }
  }
+
+ static Future<void> fetchMyRoom(String uid) async {
+    try{
+      final aaa = await _roomCollection.doc(uid);
+
+    } catch(e){
+
+    }
+  }
 }
