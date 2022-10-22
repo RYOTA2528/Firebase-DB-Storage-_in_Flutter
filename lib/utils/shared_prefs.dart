@@ -13,4 +13,8 @@ class SharedPrefs {
   static Future<void> setUid(String uid) async {
     await _preferences!.setString('uid', uid);
   }
+    //端末へ登録されてるuidの情報をとってくる。
+  static String? fetchUid() {
+      return _preferences!.getString('uid');
+  }
 }

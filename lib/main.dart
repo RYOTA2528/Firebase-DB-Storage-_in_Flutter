@@ -12,11 +12,17 @@ void main() async{
       options: DefaultFirebaseOptions.currentPlatform,
   );
   await SharedPrefs.setPrefsInstance();
-  final myUid = await UserFirestore.createUser(); //ユーザーの作成&idの格納
-  if(myUid==null) return;
-  await SharedPrefs.setUid(myUid); //端末へユーザー情報の登録
-  RoomFirestore.createRoom(myUid); //トークルームの作成処理
-
+  String? uid = SharedPrefs.fetchUid(); // /端末へ登録されてるuidの情報をとってくる。
+  // 登録済みユーザーがいる場合orいない場合でそれぞれ処理を分岐
+  if(uid == null) {
+    final myUid = await UserFirestore.createUser(); //ユーザーの作成&idの格納
+    if(myUid != null) {
+      RoomFirestore.createRoom(myUid);
+    }
+    return await SharedPrefs.setUid(myUid!); //myUidの情報を端末へユーザー情報の登録。
+  } else {
+    RoomFirestore.createRoom(uid);
+  }
   runApp(const MyApp());
 }
 
