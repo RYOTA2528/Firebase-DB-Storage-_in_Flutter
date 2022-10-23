@@ -24,7 +24,8 @@ void main() async{
     RoomFirestore.createRoom(uid);
   }
   //上記まではidでの分岐。下記で実際の実態に対しての処理を記載。
-
+  //自分が参加してるroomの取得
+  await RoomFirestore.fetchMyRoom();
   runApp(const MyApp());
 }
 

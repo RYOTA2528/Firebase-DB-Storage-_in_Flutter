@@ -41,15 +41,15 @@ class UserFirestore {
     }
   }
 
-  //myUidの情報から実際にmyProfile(自分のアカウント情報)を取得。
-  static Future<User?> fetchMyUser() async {
+  //myUidの情報から実際にmyProfile(自分のアカウント情報)を取得。（実体を生み出す処理）→×
+  //処理の関係で相手ユーザーからの情報をもらう処理へ変更
+  static Future<User?> fetchUser(String uid) async {
     try{
-      String? uid = SharedPrefs.fetchUid();
-      final myProfile = await _userCollection.doc(uid).get();
+      final snapshot = await _userCollection.doc(uid).get();
       User user = User(
-        name: myProfile.data()!['name'],
-        imagePath: myProfile.data()!['image_path'],
-        uid: uid!
+        name: snapshot.data()!['name'],
+        imagePath: snapshot.data()!['image_path'],
+        uid: uid
       );
       return user;
 
