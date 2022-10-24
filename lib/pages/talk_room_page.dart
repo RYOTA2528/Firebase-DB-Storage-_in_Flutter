@@ -54,7 +54,6 @@ class _TalkRoomPageState extends State<TalkRoomPage> {
                       Padding(
                         padding: EdgeInsets.only(top: 10, left: 5, right: 5, bottom: index == 0 ? 10 : 0),//bottomをindex[0]の時設定
                         child: Container(
-                            //文字が画面を超えることを考慮しconstraintsプロパティでメッセージmaxWidthの幅を画面6割に調整。
                             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.6),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),

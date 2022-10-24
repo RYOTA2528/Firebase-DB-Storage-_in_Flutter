@@ -8,6 +8,8 @@ import 'package:firebase/utils/shared_prefs.dart';
 class RoomFirestore {
   static final FirebaseFirestore _firebaseFirestoreInstance = FirebaseFirestore.instance; //1
   static final _roomCollection = _firebaseFirestoreInstance.collection('room'); //2
+  //streamに入る値（自分が参加してるルームの情報の更新）があり次第StreamBuilderが動き出すようスナップショット作成。
+  static final joinedRoomSnapshot = _roomCollection.where('joined_user_ids', arrayContains: SharedPrefs.fetchUid()).snapshots();
 
   //新しいトークルームの作成
   static Future<void> createRoom(String myUid) async {
@@ -27,34 +29,35 @@ class RoomFirestore {
     }
  }
   //自分が参加してるの取得（実体を生み出す処理）
-  static Future<void> fetchMyRoom() async {
+  static Future<List<TalkRoom>?> fetchMyRoom(QuerySnapshot snapshot) async {
     try{
       String myUid = SharedPrefs.fetchUid()!;
-      //自分が参加してるルームのドキュメントだけを取得
-      final snapshot = await _roomCollection.where('joined_user_ids', arrayContains: myUid).get();
       //先程作成したTalkRoomモデルを使い実体作成していくため空配列用意。
       List<TalkRoom> talkRooms =[];
       for(var doc in snapshot.docs) {
-        List<dynamic> userIds = doc.data()['joined_user_ids'];
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        List<dynamic> userIds = data['joined_user_ids'];
         late String talkUserId;
         for (var userId in userIds) {
-          if (userId == myUid) continue;
-          //取り出したuserIdを別変数に格納。（初期化は別の場所で行うためlate）
+          if (userId == myUid) continue; //myUidの時だけ取得せず続けてfor文で取り出す。
+          //取り出したuserIdを別変数に格納。（遅延初期化）
           talkUserId = userId;
         }
         //上記で取得したtalkUserIdを使い今度はtalkUserをfor分の中で一人ずつ取得する処理を記載。
         User? talkUser = await UserFirestore.fetchUser(talkUserId);
-        if (talkUser == null) return;
+        if (talkUser == null) return null;
           final talkRoom = TalkRoom(
               roomid: doc.id,
               talkUser: talkUser,
-              lastMessage: doc.data()['last_Message']
+              lastMessage: data['last_Message']
           );
         talkRooms.add(talkRoom);
+        return talkRooms;
       }
       print('トークルームの数は====${talkRooms.length}');
     } catch(e) {
         print('トークルームの取得に失敗しました。');
+        return null;
     }
   }
 }

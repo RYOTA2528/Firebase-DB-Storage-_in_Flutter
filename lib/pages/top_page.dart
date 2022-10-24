@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase/firestore/room_firestore.dart';
+import 'package:firebase/model/talk_room.dart';
 import 'package:firebase/model/user.dart';
 import 'package:firebase/pages/setting_profile_page.dart';
 import 'package:firebase/pages/talk_room_page.dart';
@@ -11,10 +14,6 @@ class TopPage extends StatefulWidget {
 }
 
 class _TopPageState extends State<TopPage> {
-  List<User> userList = [
-    User(name: 'ビーバー', uid: 'abc', imagePath: 'https://i-ogp.pximg.net/c/540x540_70/img-master/img/2014/06/06/18/29/24/43923614_p0_square1200.jpg', lastMessage: "ビーバーです。"),
-    User(name: 'ジョージ', uid: 'def', imagePath: 'https://marushinbtoc.itembox.design/item/category/george.png', lastMessage: "おさるのジョージ")
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -27,39 +26,63 @@ class _TopPageState extends State<TopPage> {
           }, icon: Icon(Icons.settings))
         ],
       ),
-      body:ListView.builder(
-          itemCount: userList.length,
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => TalkRoomPage(userList[index].name)));
-              },
-              child: SizedBox(
-                height: 80,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundImage:
-                          userList[index].imagePath.toString() == null ? null : NetworkImage(userList[index].imagePath!),
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(userList[index].name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                        Text(userList[index].lastMessage, style: const TextStyle(color: Colors.grey)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+      //リアルタイムで更新されるように修正。
+      body:StreamBuilder<QuerySnapshot>(
+        stream: RoomFirestore.joinedRoomSnapshot,
+        builder: (context, streamsnapshot) {
+          if(streamsnapshot.data != null) {
+            return FutureBuilder<List<TalkRoom>?>(
+                future: RoomFirestore.fetchMyRoom(streamsnapshot.data!),
+                builder: (context, futuresnapshot) {
+                  if(futuresnapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else{
+                    if(futuresnapshot.data != null){
+                      List<TalkRoom> talkRooms = futuresnapshot.data!; //futuresnapshotはfetchMyRoomメソッドの戻り値であり同じ型の変数へ代入。
+                      return ListView.builder(
+                          itemCount: talkRooms.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => TalkRoomPage(talkRooms[index].talkUser.name)));
+                              },
+                              child: SizedBox(
+                                height: 80,
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: CircleAvatar(
+                                        radius: 30,
+                                        backgroundImage:
+                                        talkRooms[index].talkUser.imagePath.toString() == null ? null : NetworkImage(talkRooms[index].talkUser.imagePath!),
+                                      ),
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(talkRooms[index].talkUser.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                                        Text(talkRooms[index].talkUser.lastMessage, style: const TextStyle(color: Colors.grey)),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          });
+                    } else {
+                      return const Text('トークルームの取得に失敗しました');
+                    }
+                  }
+                }
             );
-          }),
+          } else {
+            return const CircularProgressIndicator();
+          }
+        }
+      ),
     );
   }
 }
