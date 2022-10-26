@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase/firestore/user_firestore.dart';
+import 'package:firebase/model/message.dart';
 import 'package:firebase/model/talk_room.dart';
 import 'package:firebase/model/user.dart';
 import 'package:firebase/pages/talk_room_page.dart';
@@ -65,4 +68,21 @@ class RoomFirestore {
   static Stream<QuerySnapshot> fetchMessageSnapshot(String roomid) {
     return _roomCollection.doc(roomid).collection('message').orderBy('send_time', descending: true).snapshots();
   }
+
+  //送信されたmessageをmessageCollectionへ追加する処理
+  static Future<void> sendMessage({required String roomid, required String message}) async{
+    try{
+      //meesageCollectionへ値を追加するためにmessageCollectionを取得
+      final messageCollection = _roomCollection.doc(roomid).collection('message');
+      //今回はListで表示ではなくあくまでFirebaseのmessageCollection への追加のため下記で追加
+      await messageCollection.add({
+        'message' : message,
+        'sender_id' : SharedPrefs.fetchUid(), //自分のidであることを
+        'send_time' : Timestamp.now() //現在時刻を送信
+      });
+
+    } catch(e) {
+      return print('メッセージ送信失敗 ====== ${e}');
+    }
+}
 }

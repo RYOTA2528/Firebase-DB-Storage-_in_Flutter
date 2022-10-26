@@ -16,6 +16,7 @@ class TalkRoomPage extends StatefulWidget {
 }
 
 class _TalkRoomPageState extends State<TalkRoomPage> {
+  final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -78,11 +79,12 @@ class _TalkRoomPageState extends State<TalkRoomPage> {
                 color: Colors.white,
                 child: Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),
                           child: TextField(
-                            decoration: InputDecoration(
+                            controller: controller,
+                            decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               contentPadding: EdgeInsets.only(left: 7),
                             ),
@@ -90,7 +92,10 @@ class _TalkRoomPageState extends State<TalkRoomPage> {
                         )),
                     IconButton(
                         onPressed: () {
-
+                          RoomFirestore.sendMessage(
+                              roomid: widget.talkRoom.roomid,
+                              message: controller.text
+                          );
                         },
                         icon: const Icon(Icons.send))
                   ],
