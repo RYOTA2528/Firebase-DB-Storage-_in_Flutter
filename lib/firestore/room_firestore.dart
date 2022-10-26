@@ -53,8 +53,8 @@ class RoomFirestore {
               lastMessage: data['last_Message']
           );
         talkRooms.add(talkRoom);
-        return talkRooms;
       }
+      return talkRooms;
       print('トークルームの数は====${talkRooms.length}');
     } catch(e) {
         print('トークルームの取得に失敗しました。');

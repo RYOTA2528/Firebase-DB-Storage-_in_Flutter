@@ -31,14 +31,17 @@ class _TopPageState extends State<TopPage> {
         stream: RoomFirestore.joinedRoomSnapshot,
         builder: (context, streamsnapshot) {
           if(streamsnapshot.data != null) {
+            // print('myUidの数は====${streamsnapshot.data!.docs.length}');
             return FutureBuilder<List<TalkRoom>?>(
                 future: RoomFirestore.fetchMyRoom(streamsnapshot.data!),
                 builder: (context, futuresnapshot) {
+                  // print('自分が参加してるルームの=====${futuresnapshot.data!.length}');
                   if(futuresnapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
                   } else{
                     if(futuresnapshot.data != null){
                       List<TalkRoom> talkRooms = futuresnapshot.data!; //futuresnapshotはfetchMyRoomメソッドの戻り値であり同じ型の変数へ代入。
+                      // print('ルームの取得数は====${talkRooms.length}');
                       return ListView.builder(
                           itemCount: talkRooms.length,
                           itemBuilder: (context, index) {
