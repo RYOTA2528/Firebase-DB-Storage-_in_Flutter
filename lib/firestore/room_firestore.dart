@@ -27,6 +27,7 @@ class RoomFirestore {
     } catch(e){
       print('ルームの作成失敗 ==== $e');
     }
+    //192.168.232.2
  }
   //自分が参加してるの取得（実体を生み出す処理）
   static Future<List<TalkRoom>?> fetchMyRoom(QuerySnapshot snapshot) async {
@@ -59,5 +60,9 @@ class RoomFirestore {
         print('トークルームの取得に失敗しました。');
         return null;
     }
+  }
+  //そのユーザーとのトークルームを取得する。
+  static Stream<QuerySnapshot> fetchMessageSnapshot(String roomid) {
+    return _roomCollection.doc(roomid).collection('message').snapshots();
   }
 }

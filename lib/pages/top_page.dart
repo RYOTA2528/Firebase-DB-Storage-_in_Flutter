@@ -44,8 +44,9 @@ class _TopPageState extends State<TopPage> {
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: (){
+                                print(talkRooms[index].roomid);
                                 Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => TalkRoomPage(talkRooms[index].talkUser.name)));
+                                    builder: (context) => TalkRoomPage(talkRooms[index])));
                               },
                               child: SizedBox(
                                 height: 80,
