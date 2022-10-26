@@ -23,7 +23,7 @@ class _TalkRoomPageState extends State<TalkRoomPage> {
       backgroundColor: Colors.grey,
       appBar: AppBar(title: Text(widget.talkRoom.talkUser.name)),
       body: Stack(
-        alignment: Alignment.bottomCenter,
+        // alignment: Alignment.bottomCenter,
         children: [
           StreamBuilder<QuerySnapshot>(
             stream: RoomFirestore.fetchMessageSnapshot(widget.talkRoom.roomid),
