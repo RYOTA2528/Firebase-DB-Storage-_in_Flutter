@@ -63,6 +63,6 @@ class RoomFirestore {
   }
   //そのユーザーとのトークルームを取得する。
   static Stream<QuerySnapshot> fetchMessageSnapshot(String roomid) {
-    return _roomCollection.doc(roomid).collection('message').snapshots();
+    return _roomCollection.doc(roomid).collection('message').orderBy('send_time', descending: true).snapshots();
   }
 }
