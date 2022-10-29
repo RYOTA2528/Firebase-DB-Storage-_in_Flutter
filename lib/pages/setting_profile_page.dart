@@ -8,6 +8,7 @@ class SettingProfilePage extends StatefulWidget {
 }
 
 class _SettingProfilePageState extends State<SettingProfilePage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
