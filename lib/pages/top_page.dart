@@ -68,7 +68,7 @@ class _TopPageState extends State<TopPage> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(talkRooms[index].talkUser.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                                        Text(talkRooms[index].talkUser.lastMessage, style: const TextStyle(color: Colors.grey)),
+                                        Text(talkRooms[index].message ?? '', style: const TextStyle(color: Colors.grey)),
                                       ],
                                     ),
                                   ],

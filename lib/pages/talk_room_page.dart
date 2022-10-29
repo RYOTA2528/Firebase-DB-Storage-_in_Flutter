@@ -94,7 +94,7 @@ class _TalkRoomPageState extends State<TalkRoomPage> {
                         onPressed: () async{
                           await RoomFirestore.sendMessage(
                               roomid: widget.talkRoom.roomid,
-                              message: controller.text
+                              message: controller.text,
                           );
                           controller.clear();
                         },

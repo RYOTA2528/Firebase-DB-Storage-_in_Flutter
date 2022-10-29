@@ -53,7 +53,7 @@ class RoomFirestore {
           final talkRoom = TalkRoom(
               roomid: doc.id,
               talkUser: talkUser,
-              lastMessage: data['last_Message']
+              message: data['message']
           );
         talkRooms.add(talkRoom);
       }
@@ -70,7 +70,7 @@ class RoomFirestore {
   }
 
   //送信されたmessageをmessageCollectionへ追加する処理
-  static Future<void> sendMessage({required String roomid, required String message}) async{
+  static Future<void> sendMessage({required String roomid, required String message,}) async{
     try{
       //meesageCollectionへ値を追加するためにmessageCollectionを取得
       final messageCollection = _roomCollection.doc(roomid).collection('message');
@@ -78,9 +78,12 @@ class RoomFirestore {
       await messageCollection.add({
         'message' : message,
         'sender_id' : SharedPrefs.fetchUid(), //自分のidであることを
-        'send_time' : Timestamp.now() //現在時刻を送信
+        'send_time' : Timestamp.now(), //現在時刻を送
       });
-
+      //lastMessageの情報を追加（更新）する。
+      await _roomCollection.doc(roomid).update({
+        'message' : message
+      });
     } catch(e) {
       return print('メッセージ送信失敗 ====== ${e}');
     }
