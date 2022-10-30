@@ -58,4 +58,16 @@ class UserFirestore {
       return null;
     }
   }
+  //プロフィール編集ページで編集ボタンを押した際の更新処理
+  static Future<User?> updateUser(User newProfile) async {
+    try{
+      // String myUid = SharedPrefs.fetchUid()!; //まずは自分のidを取得 //必須パラメータであったため渡す側で同じ処理を追加
+      await _userCollection.doc(newProfile.uid).update({
+        'name': newProfile.name,
+        'image_path': newProfile.imagePath
+      });
+    } catch(e) {
+      print('ユーザー情報の更新に失敗しました======${e}');
+    }
+  }
 }
